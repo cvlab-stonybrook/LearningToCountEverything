@@ -1,4 +1,9 @@
 # Learning To Count Everything
+
+## Official repository for CVPR 2021 paper Learning To Count Everything, Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
+
+## FSC147 dataset will be released soon.
+
 ## Installation with Conda
 
 conda create -n fscount python=3.7 -y
