@@ -1,6 +1,13 @@
 # Learning To Count Everything
 
-## Official repository for CVPR 2021 paper Learning To Count Everything, Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
+This is the official implementation of the following CVPR 2021 paper:
+
+```
+Learning To Count Everything
+Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2021.
+
+```
 
 ## Dataset download
 Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
@@ -48,11 +55,21 @@ python test.py --data_path /PATH/TO/YOUR/FSC147/DATASET/ --test_split val --adap
 ```
 
 
-
-
 ## Training 
 ``` bash
 python train.py --gpu 0
+```
+
+## Citation
+
+If you find the code useful, please cite:
+```
+@inproceedings{m_Ranjan-etal-CVPR21,
+  author = {Viresh Ranjan and Udbhav Sharma and Thu Nguyen and Minh Hoai},
+  title = {Learning To Count Everything},
+  year = {2021},
+  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)},
+}
 ```
 
 
