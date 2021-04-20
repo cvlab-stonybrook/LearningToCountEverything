@@ -6,7 +6,6 @@ This is the official implementation of the following CVPR 2021 paper:
 Learning To Count Everything
 Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
 Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2021.
-
 ```
 
 ## Dataset download
@@ -68,7 +67,7 @@ If you find the code useful, please cite:
   author = {Viresh Ranjan and Udbhav Sharma and Thu Nguyen and Minh Hoai},
   title = {Learning To Count Everything},
   year = {2021},
-  booktitle = {Proceedings of the {IEEE} Conference on Computer Vision and Pattern Recognition (CVPR)},
+  booktitle = {Proceedings of the {IEEE/CVF} Conference on Computer Vision and Pattern Recognition (CVPR)},
 }
 ```
 
