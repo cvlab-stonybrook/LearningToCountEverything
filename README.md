@@ -13,7 +13,7 @@ Validation and test sets can be found here: https://drive.google.com/file/d/1XDP
 
 Place the unzipped image directory inside the data directory.
 
-Negative stroke data can be found here: Link
+Negative stroke data can be found here: https://drive.google.com/file/d/1Drygkp9YuJqW20U9sG4HK2sS0k95DWq7/view
 
 Entire dataset will be released soon.
 
