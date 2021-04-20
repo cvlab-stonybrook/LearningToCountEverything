@@ -24,7 +24,7 @@ import torch.optim as optim
 
 
 parser = argparse.ArgumentParser(description="Few Shot Counting Evaluation code")
-parser.add_argument("-dp", "--data_path", type=str, default='/home/hoai/DataSets/AgnosticCounting/FSC147_384_V2/', help="Path to the FSC147 dataset")
+parser.add_argument("-dp", "--data_path", type=str, default='./data/', help="Path to the FSC147 dataset")
 parser.add_argument("-ts", "--test_split", type=str, default='val', choices=["train", "test", "val"], help="what data split to evaluate on")
 parser.add_argument("-m",  "--model_path", type=str, default="./data/pretrainedModels/FamNet_Save1.pth", help="path to trained model")
 parser.add_argument("-a",  "--adapt", action='store_true', help="If specified, perform test time adaptation")
@@ -36,7 +36,7 @@ parser.add_argument("-g",  "--gpu-id", type=int, default=0, help="GPU id. Defaul
 args = parser.parse_args()
 
 data_path = args.data_path
-anno_file = data_path + 'json_annotationCombined_384_VarV2_updated1.json'
+anno_file = data_path + 'annotation_Val_Test_384_VarV2.json'
 data_split_file = data_path + 'Train_Test_Val_FSC_147.json'
 im_dir = data_path + 'images_384_VarV2'
 
