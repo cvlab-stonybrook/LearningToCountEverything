@@ -13,6 +13,8 @@ Validation and test sets can be found here: https://drive.google.com/file/d/1XDP
 
 Place the unzipped image directory inside the data directory.
 
+Negative stroke data can be found here: Link
+
 Entire dataset will be released soon.
 
 ## Installation with Conda
