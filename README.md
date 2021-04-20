@@ -2,7 +2,10 @@
 
 ## Official repository for CVPR 2021 paper Learning To Count Everything, Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
 
-## FSC147 dataset will be released soon.
+## Dataset download
+Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
+
+Entire dataset will be released soon.
 
 ## Installation with Conda
 
