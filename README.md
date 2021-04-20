@@ -5,6 +5,8 @@
 ## Dataset download
 Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
 
+Place the unzipped image directory inside the data directory.
+
 Entire dataset will be released soon.
 
 ## Installation with Conda
