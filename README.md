@@ -49,7 +49,7 @@ We are providing our pretrained FamNet model, and the evaluation code can be use
 ```bash 
 python test.py --data_path /PATH/TO/YOUR/FSC147/DATASET/ --test_split val
 ```
-### Testing on val split adaptation
+### Testing on val split with adaptation
 ```bash 
 python test.py --data_path /PATH/TO/YOUR/FSC147/DATASET/ --test_split val --adapt
 ```
