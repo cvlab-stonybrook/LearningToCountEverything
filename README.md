@@ -7,6 +7,7 @@ Learning To Count Everything
 Viresh Ranjan, Udbhav Sharma, Thu Nguyen and Minh Hoai
 Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2021.
 ```
+Link to arxiv preprint: https://arxiv.org/pdf/2104.08391.pdf
 
 ## Dataset download
 Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
@@ -48,7 +49,7 @@ We are providing our pretrained FamNet model, and the evaluation code can be use
 ```bash 
 python test.py --data_path /PATH/TO/YOUR/FSC147/DATASET/ --test_split val
 ```
-### Testing on test split adaptation
+### Testing on val split adaptation
 ```bash 
 python test.py --data_path /PATH/TO/YOUR/FSC147/DATASET/ --test_split val --adapt
 ```
