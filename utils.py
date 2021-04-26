@@ -55,8 +55,7 @@ def matlab_style_gauss2D(shape=(3,3),sigma=0.5):
         h /= sumh
     return h
 
-def PerturbationLoss(output,boxes,sigma=8):
-    ones = torch.ones(1).cuda()
+def PerturbationLoss(output,boxes,sigma=8, use_gpu=True):
     Loss = 0.
     if boxes.shape[1] > 1:
         boxes = boxes.squeeze()
@@ -68,7 +67,7 @@ def PerturbationLoss(output,boxes,sigma=8):
             out = output[:,:,y1:y2,x1:x2]
             GaussKernel = matlab_style_gauss2D(shape=(out.shape[2],out.shape[3]),sigma=sigma)
             GaussKernel = torch.from_numpy(GaussKernel).float()
-            GaussKernel = GaussKernel.cuda()
+            if use_gpu: GaussKernel = GaussKernel.cuda()
             Loss += F.mse_loss(out.squeeze(),GaussKernel)
     else:
         boxes = boxes.squeeze()
@@ -79,14 +78,14 @@ def PerturbationLoss(output,boxes,sigma=8):
         out = output[:,:,y1:y2,x1:x2]
         Gauss = matlab_style_gauss2D(shape=(out.shape[2],out.shape[3]),sigma=sigma)
         GaussKernel = torch.from_numpy(Gauss).float()
-        GaussKernel = GaussKernel.cuda()
+        if use_gpu: GaussKernel = GaussKernel.cuda()
         Loss += F.mse_loss(out.squeeze(),GaussKernel) 
     return Loss
 
 
-def MincountLoss(output,boxes):
-    density = output
-    ones = torch.ones(1).cuda()
+def MincountLoss(output,boxes, use_gpu=True):
+    ones = torch.ones(1)
+    if use_gpu: ones = ones.cuda()
     Loss = 0.
     if boxes.shape[1] > 1:
         boxes = boxes.squeeze()
@@ -136,7 +135,8 @@ def extract_features(feature_model, image, boxes,feat_map_keys=['map3','map4'], 
     Getting features for the examples (N*M) * C * h * w
     """
     for ix in range(0,N):
-        boxes = boxes[ix].squeeze()
+        # boxes = boxes.squeeze(0)
+        boxes = boxes[ix][0]
         cnter = 0
         Cnter1 = 0
         for keys in feat_map_keys:

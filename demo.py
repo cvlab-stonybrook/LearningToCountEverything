@@ -14,7 +14,9 @@ from PIL import Image
 import os
 import torch
 import argparse
-
+import torch.optim as optim
+from utils import MincountLoss, PerturbationLoss
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="Few Shot Counting Demo code")
 parser.add_argument("-i", "--input-image", type=str, required=True, help="/Path/to/input/image/file/")
@@ -22,6 +24,13 @@ parser.add_argument("-b", "--bbox-file", type=str, help="/Path/to/file/of/boundi
 parser.add_argument("-o", "--output-dir", type=str, default=".", help="/Path/to/output/image/file")
 parser.add_argument("-m",  "--model_path", type=str, default="./data/pretrainedModels/FamNet_Save1.pth", help="path to trained model")
 parser.add_argument("-g",  "--gpu-id", type=int, default=0, help="GPU id. Default 0 for the first GPU. Use -1 for CPU.")
+
+parser.add_argument("-a",  "--adapt", action='store_true', help="If specified, perform test time adaptation")
+parser.add_argument("-gs", "--gradient_steps", type=int,default=100, help="number of gradient steps for the adaptation")
+parser.add_argument("-lr", "--learning_rate", type=float,default=1e-7, help="learning rate for adaptation")
+parser.add_argument("-wm", "--weight_mincount", type=float,default=1e-9, help="weight multiplier for Mincount Loss")
+parser.add_argument("-wp", "--weight_perturbation", type=float,default=1e-4, help="weight multiplier for Perturbation Loss")
+
 args = parser.parse_args()
 
 if not torch.cuda.is_available() or args.gpu_id < 0:
@@ -53,15 +62,12 @@ if args.bbox_file is None: # if no bounding box file is given, prompt the user f
     fout = open(out_bbox_file, "w")
 
     im = cv2.imread(args.input_image)
-    # rects = cv2.selectROIs("Image", im,False,False)
     cv2.imshow('image', im)
     rects = select_exemplar_rois(im)
 
     rects1 = list()
     for rect in rects:
-        x1, y1 = rect[0], rect[1]
-        x2 = x1 + rect[2]
-        y2 = y1 + rect[3]
+        y1, x1, y2, x2 = rect
         rects1.append([y1, x1, y2, x2])
         fout.write("{} {} {} {}\n".format(y1, x1, y2, x2))
 
@@ -90,13 +96,41 @@ sample = {'image': image, 'lines_boxes': rects1}
 sample = Transform(sample)
 image, boxes = sample['image'], sample['boxes']
 
+
 if use_gpu:
     image = image.cuda()
     boxes = boxes.cuda()
 
 with torch.no_grad():
     features = extract_features(resnet50_conv, image.unsqueeze(0), boxes.unsqueeze(0), MAPS, Scales)
-    output = regressor(features)
+
+if not args.adapt:
+    with torch.no_grad(): output = regressor(features)
+else:
+    features.required_grad = True
+    #adapted_regressor = copy.deepcopy(regressor)
+    adapted_regressor = regressor
+    adapted_regressor.train()
+    optimizer = optim.Adam(adapted_regressor.parameters(), lr=args.learning_rate)
+
+    pbar = tqdm(range(args.gradient_steps))
+    for step in pbar:
+        optimizer.zero_grad()
+        output = adapted_regressor(features)
+        lCount = args.weight_mincount * MincountLoss(output, boxes, use_gpu=use_gpu)
+        lPerturbation = args.weight_perturbation * PerturbationLoss(output, boxes, sigma=8, use_gpu=use_gpu)
+        Loss = lCount + lPerturbation
+        # loss can become zero in some cases, where loss is a 0 valued scalar and not a tensor
+        # So Perform gradient descent only for non zero cases
+        if torch.is_tensor(Loss):
+            Loss.backward()
+            optimizer.step()
+
+        pbar.set_description('Adaptation step: {:<3}, loss: {}, predicted-count: {:6.1f}'.format(step, Loss.item(), output.sum().item()))
+
+    features.required_grad = False
+    output = adapted_regressor(features)
+
 
 print('===> The predicted count is: {:6.2f}'.format(output.sum().item()))
 
