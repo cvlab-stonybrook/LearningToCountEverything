@@ -10,7 +10,7 @@ Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognitio
 ```
 Link to arxiv preprint: https://arxiv.org/pdf/2104.08391.pdf
 
-## Dataset download
+## Dataset download (Will be available soon)
 Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
 
 Place the unzipped image directory inside the data directory.
