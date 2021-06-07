@@ -10,12 +10,10 @@ Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognitio
 ```
 Link to arxiv preprint: https://arxiv.org/pdf/2104.08391.pdf
 
-## Dataset download (Will be available soon)
-Validation and test sets can be found here: https://drive.google.com/file/d/1XDPeOOqavF1CTaOe3sLjFj-SByQwhxss/view?usp=sharing
+## Dataset download 
+Images can be downloaded from here: https://drive.google.com/file/d/1ymDYrGs9DSRicfZbSCDiOu0ikGDh5k6S/view?usp=sharing
 
 Place the unzipped image directory inside the data directory.
-
-Entire dataset will be released soon.
 
 ## Installation with Conda
 
