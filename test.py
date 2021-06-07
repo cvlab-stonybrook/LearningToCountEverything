@@ -36,8 +36,8 @@ parser.add_argument("-g",  "--gpu-id", type=int, default=0, help="GPU id. Defaul
 args = parser.parse_args()
 
 data_path = args.data_path
-anno_file = data_path + 'annotation_Val_Test_384_VarV2.json'
-data_split_file = data_path + 'Train_Test_Val_FSC147_HW6_Split.json'
+anno_file = data_path + 'annotation_FSC147_384.json'
+data_split_file = data_path + 'Train_Test_Val_FSC_147.json'
 im_dir = data_path + 'images_384_VarV2'
 
 if not exists(anno_file) or not exists(im_dir):

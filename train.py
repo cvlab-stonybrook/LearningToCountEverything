@@ -32,7 +32,7 @@ args = parser.parse_args()
 
 
 data_path = args.data_path
-anno_file = data_path + 'json_annotationCombined_384_VarV2_updated1.json'
+anno_file = data_path + 'annotation_FSC147_384.json'
 data_split_file = data_path + 'Train_Test_Val_FSC_147.json'
 im_dir = data_path + 'images_384_VarV2'
 gt_dir = data_path + 'gt_density_map_adaptive_384_VarV2'
