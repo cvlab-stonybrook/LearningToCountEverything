@@ -13,7 +13,9 @@ Link to arxiv preprint: https://arxiv.org/pdf/2104.08391.pdf
 ## Dataset download 
 Images can be downloaded from here: https://drive.google.com/file/d/1ymDYrGs9DSRicfZbSCDiOu0ikGDh5k6S/view?usp=sharing
 
-Place the unzipped image directory inside the data directory.
+Precomputed density maps can be found here: https://archive.org/details/FSC147-GT
+
+Place the unzipped image directory and density map directory inside the data directory.
 
 ## Installation with Conda
 
