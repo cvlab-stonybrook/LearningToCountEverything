@@ -10,6 +10,9 @@ Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognitio
 ```
 Link to arxiv preprint: https://arxiv.org/pdf/2104.08391.pdf
 
+Short presentation video
+
+[![Short Presentation](https://img.youtube.com/vi/kdpNq5V2NuA/hqdefault.jpg)](https://youtu.be/kdpNq5V2NuA)
 ## Dataset download 
 Images can be downloaded from here: https://drive.google.com/file/d/1ymDYrGs9DSRicfZbSCDiOu0ikGDh5k6S/view?usp=sharing
 
