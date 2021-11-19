@@ -109,4 +109,5 @@ dependencies:
     - wcwidth==0.2.5
     - webencodings==0.5.1
     - zipp==3.6.0
+    - wandb
 prefix: /opt/conda/envs/fscount

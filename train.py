@@ -19,6 +19,9 @@ from os.path import exists,join
 import random
 import torch.optim as optim
 import torch.nn.functional as F
+import wandb
+
+wandb.init(project="learning-to-count-every-thing")
 
 
 parser = argparse.ArgumentParser(description="Few Shot Counting Evaluation code")
@@ -184,7 +187,15 @@ for epoch in range(0,args.epochs):
         best_rmse = val_rmse
         model_name = args.output_dir + '/' + "FamNet.pth"
         torch.save(regressor.state_dict(), model_name)
-
+    # Log loss
+    wandb.log({"Epoch": epoch+1,
+                "Avg. Epoch Loss:": stats[-1][0],
+                "Train MAE": stats[-1][1],
+                "Train RMSE": stats[-1][2],
+                "Val MAE": stats[-1][3],
+                "Val RMSE": stats[-1][4]
+                })
+    print("")
     print("Epoch {}, Avg. Epoch Loss: {} Train MAE: {} Train RMSE: {} Val MAE: {} Val RMSE: {} Best Val MAE: {} Best Val RMSE: {} ".format(
               epoch+1,  stats[-1][0], stats[-1][1], stats[-1][2], stats[-1][3], stats[-1][4], best_mae, best_rmse))
     
