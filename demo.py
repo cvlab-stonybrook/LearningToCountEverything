@@ -72,7 +72,7 @@ if args.bbox_file is None: # if no bounding box file is given, prompt the user f
         fout.write("{} {} {} {}\n".format(y1, x1, y2, x2))
 
     fout.close()
-    cv2.destroyWindow("Image")
+    cv2.destroyWindow("image")
     print("selected bounding boxes are saved to {}".format(out_bbox_file))
 else:
     with open(args.bbox_file, "r") as fin:
