@@ -181,16 +181,16 @@ if exists(checkpoint_file):
     start_epoch = checkpoint['epoch']
     print(f"Resuming training from epoch {start_epoch}")
 
-for epoch in range(start_epoch,args.epochs):
+for epoch in tqdm(range(start_epoch, args.epochs), desc='Training Epochs'):
     regressor.train()
-    train_loss,train_mae,train_rmse = train()
+    train_loss, train_mae, train_rmse = train()
     regressor.eval()
-    val_mae,val_rmse = eval()
+    val_mae, val_rmse = eval()
     stats.append((train_loss, train_mae, train_rmse, val_mae, val_rmse))
-    stats_file = join(args.output_dir, "stats" +  ".txt")
-    with open(stats_file, 'w') as f:
-        for s in stats:
-            f.write("%s\n" % ','.join([str(x) for x in s]))    
+    stats_file = join(args.output_dir, "stats.txt")
+    with open(stats_file, 'a') as f:  # Append to the file
+        f.write(f"Epoch {epoch + 1}, {','.join(map(str, stats[-1]))}\n")
+
     if best_mae >= val_mae:
         best_mae = val_mae
         best_rmse = val_rmse
