@@ -169,6 +169,18 @@ def eval():
 
 best_mae, best_rmse = 1e7, 1e7
 stats = list()
+
+checkpoint_file = join(args.output_dir, "checkpoint.pth")
+start_epoch = 0  # Default start_epoch when training from scratch
+if exists(checkpoint_file):
+    checkpoint = torch.load(checkpoint_file)
+    regressor.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    best_mae = checkpoint['best_mae']
+    best_rmse = checkpoint['best_rmse']
+    start_epoch = checkpoint['epoch']
+    print(f"Resuming training from epoch {start_epoch}")
+
 for epoch in range(0,args.epochs):
     regressor.train()
     train_loss,train_mae,train_rmse = train()
@@ -184,6 +196,15 @@ for epoch in range(0,args.epochs):
         best_rmse = val_rmse
         model_name = args.output_dir + '/' + "FamNet.pth"
         torch.save(regressor.state_dict(), model_name)
+
+    # Save checkpoint
+    torch.save({
+        'epoch': epoch + 1,
+        'model_state_dict': regressor.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'best_mae': best_mae,
+        'best_rmse': best_rmse
+    }, checkpoint_file)
 
     print("Epoch {}, Avg. Epoch Loss: {} Train MAE: {} Train RMSE: {} Val MAE: {} Val RMSE: {} Best Val MAE: {} Best Val RMSE: {} ".format(
               epoch+1,  stats[-1][0], stats[-1][1], stats[-1][2], stats[-1][3], stats[-1][4], best_mae, best_rmse))
