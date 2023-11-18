@@ -181,7 +181,7 @@ if exists(checkpoint_file):
     start_epoch = checkpoint['epoch']
     print(f"Resuming training from epoch {start_epoch}")
 
-for epoch in range(0,args.epochs):
+for epoch in range(start_epoch,args.epochs):
     regressor.train()
     train_loss,train_mae,train_rmse = train()
     regressor.eval()
