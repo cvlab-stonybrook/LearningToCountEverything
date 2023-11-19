@@ -68,9 +68,9 @@ def train():
     train_mae = 0
     train_rmse = 0
     train_loss = 0
-    pbar = tqdm(im_ids)
     cnt = 0
-    for im_id in pbar:
+    
+    for im_id in im_ids:
         cnt += 1
         anno = annotations[im_id]
         bboxes = anno['box_examples_coordinates']
@@ -113,11 +113,11 @@ def train():
         cnt_err = abs(pred_cnt - gt_cnt)
         train_mae += cnt_err
         train_rmse += cnt_err ** 2
-        pbar.set_description('actual-predicted: {:6.1f}, {:6.1f}, error: {:6.1f}. Current MAE: {:5.2f}, RMSE: {:5.2f} Best VAL MAE: {:5.2f}, RMSE: {:5.2f}'.format( gt_cnt, pred_cnt, abs(pred_cnt - gt_cnt), train_mae/cnt, (train_rmse/cnt)**0.5,best_mae,best_rmse))
-        print("")
+        
     train_loss = train_loss / len(im_ids)
     train_mae = (train_mae / len(im_ids))
     train_rmse = (train_rmse / len(im_ids))**0.5
+    
     return train_loss,train_mae,train_rmse
 
 
@@ -130,8 +130,8 @@ def eval():
 
     print("Evaluation on {} data".format(args.test_split))
     im_ids = data_split[args.test_split]
-    pbar = tqdm(im_ids)
-    for im_id in pbar:
+    for im_id in im_ids:
+        cnt += 1
         anno = annotations[im_id]
         bboxes = anno['box_examples_coordinates']
         dots = np.array(anno['points'])
@@ -159,9 +159,6 @@ def eval():
         err = abs(gt_cnt - pred_cnt)
         SAE += err
         SSE += err**2
-
-        pbar.set_description('{:<8}: actual-predicted: {:6d}, {:6.1f}, error: {:6.1f}. Current MAE: {:5.2f}, RMSE: {:5.2f}'.format(im_id, gt_cnt, pred_cnt, abs(pred_cnt - gt_cnt), SAE/cnt, (SSE/cnt)**0.5))
-        print("")
 
     print('On {} data, MAE: {:6.2f}, RMSE: {:6.2f}'.format(args.test_split, SAE/cnt, (SSE/cnt)**0.5))
     return SAE/cnt, (SSE/cnt)**0.5
@@ -206,10 +203,4 @@ for epoch in tqdm(range(start_epoch, args.epochs), desc='Training Epochs'):
         'best_rmse': best_rmse
     }, checkpoint_file)
 
-    print("Epoch {}, Avg. Epoch Loss: {} Train MAE: {} Train RMSE: {} Val MAE: {} Val RMSE: {} Best Val MAE: {} Best Val RMSE: {} ".format(
-              epoch+1,  stats[-1][0], stats[-1][1], stats[-1][2], stats[-1][3], stats[-1][4], best_mae, best_rmse))
-    
-
-
-
-
+    print(f"Epoch {epoch + 1}, Avg. Epoch Loss: {stats[-1][0]}, Train MAE: {stats[-1][1]}, Train RMSE: {stats[-1][2]}, Val MAE: {stats[-1][3]}, Val RMSE: {stats[-1][4]}, Best Val MAE: {best_mae}, Best Val RMSE: {best_rmse}")
