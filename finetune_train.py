@@ -15,11 +15,11 @@ import argparse
 import json
 import numpy as np
 from tqdm import tqdm
-import ast
 from os.path import exists,join
 import random
 import torch.optim as optim
 import torch.nn.functional as F
+import ast
 
 
 parser = argparse.ArgumentParser(description="Few Shot Counting Evaluation code")
@@ -33,15 +33,16 @@ args = parser.parse_args()
 
 
 data_path = args.data_path
-# Loading train dataset
-anno_file_train = data_path + 'train_data_annotation_final.txt'
-im_dir_train = data_path + 'train_data/images/'
-gt_dir_train = data_path + 'train_data/ground_truth'
 
-# Loading validation dataset
-anno_file_valid = data_path + 'val_data_annotation_final.txt'
-im_dir_valid = data_path + 'val_data/images/'
-gt_dir_valid = data_path + 'val_data/ground_truth'
+# Loading train dataset
+anno_file_train = data_path + '/train_data_annotation_final.txt'
+im_dir_train = data_path + '/train_data/images'
+gt_dir_train = data_path + '/train_data/ground_truth'
+
+# Loading valid dataset
+anno_file_val = data_path + '/val_data_annotation_final.txt'
+im_dir_val = data_path + '/val_data/images'
+gt_dir_val = data_path + '/val_data/ground_truth'
 
 if not exists(args.output_dir):
     os.mkdir(args.output_dir)
@@ -61,8 +62,9 @@ regressor.train()
 regressor.cuda()
 optimizer = optim.Adam(regressor.parameters(), lr = args.learning_rate)
 
-train_anno = {}
+# Training
 
+annotations_train = {}
 with open(anno_file_train) as f:
     lines = f.readlines()
 
@@ -70,15 +72,12 @@ for line in lines:
     line = line.strip()
     if line:
         data = ast.literal_eval(line)
-        train_anno.update(data)
+        annotations_train.update(data)
 
 def train():
-    print("Training on your dataset")
-    
-    # Get the list of image IDs
-    im_ids = list(train_anno.keys())
+    print("Training on your custom dataset")
+    im_ids = list(annotations_train.keys())
     random.shuffle(im_ids)
-    
     train_mae = 0
     train_rmse = 0
     train_loss = 0
@@ -86,11 +85,11 @@ def train():
     
     for im_id in im_ids:
         cnt += 1
-        anno = train_anno[im_id]
+        anno = annotations_train[im_id]
         bboxes = anno['box_examples_coordinates']
         dots = anno['points']
 
-        rects = []
+        rects = list()
         for bbox in bboxes:
             x1 = bbox[0][0]
             y1 = bbox[0][1]
@@ -99,10 +98,11 @@ def train():
             rects.append([y1, x1, y2, x2])
 
         image = Image.open('{}/{}'.format(im_dir_train, im_id))
+        image = image.convert("RGB")
         image.load()
         density_path = gt_dir_train + '/' + im_id.split(".jpg")[0] + ".npy"
         density = np.load(density_path).astype('float32')    
-        sample = {'image': image, 'lines_boxes': rects, 'gt_density': density}
+        sample = {'image':image,'lines_boxes':rects,'gt_density':density}
         sample = TransformTrain(sample)
         image, boxes,gt_density = sample['image'].cuda(), sample['boxes'].cuda(),sample['gt_density'].cuda()
 
@@ -135,17 +135,16 @@ def train():
     return train_loss,train_mae,train_rmse
 
 
-# Loading the valid test
-valid_anno = {}
-
-with open(anno_file_valid) as f:
+# Evaluating
+annotations_val = {}
+with open(anno_file_val) as f:
     lines = f.readlines()
 
 for line in lines:
     line = line.strip()
     if line:
         data = ast.literal_eval(line)
-        valid_anno.update(data)
+        annotations_val.update(data)
    
 def eval():
     cnt = 0
@@ -153,10 +152,10 @@ def eval():
     SSE = 0 # sum of square errors
 
     print("Evaluation on your dataset")
-    im_ids = list(valid_anno.keys())
+    im_ids = list(annotations_val.keys())
     for im_id in im_ids:
         cnt += 1
-        anno = valid_anno[im_id]
+        anno = annotations_val[im_id]
         bboxes = anno['box_examples_coordinates']
         dots = anno['points']
 
@@ -168,7 +167,8 @@ def eval():
             y2 = bbox[2][1]
             rects.append([y1, x1, y2, x2])
 
-        image = Image.open('{}/{}'.format(im_dir_valid, im_id))
+        image = Image.open('{}/{}'.format(im_dir_val, im_id))
+        image = image.convert("RGB")
         image.load()
         sample = {'image':image,'lines_boxes':rects}
         sample = Transform(sample)
@@ -177,14 +177,14 @@ def eval():
         with torch.no_grad():
             output = regressor(extract_features(resnet50_conv, image.unsqueeze(0), boxes.unsqueeze(0), MAPS, Scales))
 
-        gt_cnt = dots.shape[0]
+        gt_cnt = dots
         pred_cnt = output.sum().item()
         cnt = cnt + 1
         err = abs(gt_cnt - pred_cnt)
         SAE += err
         SSE += err**2
 
-    print('On {} data, MAE: {:6.2f}, RMSE: {:6.2f}'.format(SAE/cnt, (SSE/cnt)**0.5))
+    print('On {} data, MAE: {:6.2f}, RMSE: {:6.2f}'.format("training", SAE/cnt, (SSE/cnt)**0.5))
     return SAE/cnt, (SSE/cnt)**0.5
 
 
